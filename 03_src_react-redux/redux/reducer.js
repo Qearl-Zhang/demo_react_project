@@ -1,5 +1,4 @@
 // redux中的reducer,用于真正加工状态,获取到preState,action
-
 import {INCREMENT,DECREMENT} from './action_types'
 
 // 什么时候调用reducer?1+n
