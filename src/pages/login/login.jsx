@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Form, Icon, Input, Button } from "antd";
-import axios from 'axios'
+import { Form, Icon, Input, Button,message } from "antd";
+import {reqLogin} from "../../api";
 import logo from "./images/logo.png";
 import "./css/login.less";
 const { Item } = Form;
@@ -9,14 +9,20 @@ class Login extends Component {
   // 响应表单的提交
   handleSubmit = event => {
     event.preventDefault();
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields(async (err, values) => {
       // 对表单进行最后一步统一验证
       if (!err) {
         // console.log("发送请求", values);
-        axios.post('http://localhost:3000/login',values).then(
-          response => console.log(response),
-          error=>console.log(error.message)
-        )
+        let loginResult = await reqLogin(values)
+        const {status,data,msg} = loginResult
+        if(status === 0){
+          console.log(data)
+          // 1表示显示的时间秒数
+          message.success('登录成功',1)
+          this.props.history.replace('/admin')
+        }else {
+          message.warning(msg,1)
+        }
       }
     });
   };
@@ -59,7 +65,7 @@ class Login extends Component {
                     { max: 12, message: "用户名必须小于12位" },
                     { pattern: /^\w+$/, message: "只能输入英文、数字、下划线" }
                   ],
-                  initialValue:'admin'  // 设置初始值
+                  initialValue: "admin" // 设置初始值
                 })(
                   <Input
                     prefix={

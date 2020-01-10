@@ -1,0 +1,1 @@
+export const BASE_URL = 'http://localhost:3000'   // 请求基本路径,后端服务器地址
