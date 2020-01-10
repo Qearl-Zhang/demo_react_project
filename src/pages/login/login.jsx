@@ -1,5 +1,10 @@
 import React, { Component } from "react";
 import { Form, Icon, Input, Button,message } from "antd";
+// 引入connect,用于创建一个容器组件
+import {connect} from 'react-redux'
+// 引入action_creators
+import {saveUserInfo} from '../../redux/actions/login_actions'
+import {Redirect} from 'react-router-dom'
 import {reqLogin} from "../../api";
 import logo from "./images/logo.png";
 import "./css/login.less";
@@ -20,6 +25,8 @@ class Login extends Component {
           // 1表示显示的时间秒数
           message.success('登录成功',1)
           this.props.history.replace('/admin')
+          // 此处把data交给redux管理
+          this.props.saveUserInfo(data)
         }else {
           message.warning(msg,1)
         }
@@ -40,6 +47,13 @@ class Login extends Component {
     callback();
   };
   render() {
+    // 判断是否登录isLogin是否为true
+    if(this.props.userInfo.isLogin){
+      // 用户已经登录,不允许到login页面,强制跳转到admin
+      // this.props.replace('/admin')  // 不太合理,建议使用Redirec重定向
+      // 在render里跳转必须return
+      return <Redirect to="/admin" />
+    }
     /* 用户名的声明式验证 */
     const { getFieldDecorator } = this.props.form;
     return (
@@ -105,8 +119,9 @@ class Login extends Component {
   }
 }
 
-// 加工我们所写的Login组件，生成一个新的WrappedLogin，页面真正渲染的是WrappedLogin
-/* const WrappedLogin = Form.create()(Login)
-export default WrappedLogin */
+export default connect(
+  state=>({userInfo:state.userInfo}),  //映射状态
+  {saveUserInfo}  //映射操作状态的方法
+)(Form.create()(Login))
 
-export default Form.create()(Login);
+// 注意最后的connect()(这里000)里是新组件,不是Login
