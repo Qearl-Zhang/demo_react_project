@@ -8,7 +8,17 @@ import {Redirect} from 'react-router-dom'
 import {reqLogin} from "../../api";
 import logo from "./images/logo.png";
 import "./css/login.less";
+
 const { Item } = Form;
+
+// 使用装饰器函数
+// 第一个装饰器是Form.create()调用的返回值的函数
+// 第二个装饰器是connect继续装饰
+@connect(
+  state=>({userInfo:state.userInfo}),  //映射状态
+  {saveUserInfo}  //映射操作状态的方法
+)
+@Form.create()
 
 class Login extends Component {
   // 响应表单的提交
@@ -119,9 +129,12 @@ class Login extends Component {
   }
 }
 
+export default Login
+
+/* // 不使用装饰器函数写法如下
 export default connect(
   state=>({userInfo:state.userInfo}),  //映射状态
   {saveUserInfo}  //映射操作状态的方法
 )(Form.create()(Login))
 
-// 注意最后的connect()(这里000)里是新组件,不是Login
+// 注意最后的connect()(*这里*)里是新组件,不是Login */

@@ -4,6 +4,12 @@ import {Redirect} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {deleteUserInfo} from '../../redux/actions/login_actions'
 
+// 使用装饰器函数
+@connect(
+  state=>({userInfo:state.userInfo}),
+  {deleteUserInfo}
+)
+
 class Admin extends Component{
   logout =()=>{
     // 删除redux,localStorage中保存的用户数据
@@ -27,7 +33,10 @@ class Admin extends Component{
   }
 }
 
-export default connect(
+/* // 上方使用装饰器函数的写法相当于
+Admin = connect(
   state=>({userInfo:state.userInfo}),
   {deleteUserInfo}
-)(Admin)
+)(Admin) */
+
+export default Admin
